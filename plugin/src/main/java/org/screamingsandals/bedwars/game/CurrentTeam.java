@@ -113,7 +113,7 @@ public class CurrentTeam implements RunningTeam {
     public List<Player> getConnectedPlayers() {
         List<Player> playerList = new ArrayList<>();
         for (GamePlayer gamePlayer : players) {
-            playerList.add(gamePlayer.player);
+            playerList.add(gamePlayer.getInstance());
         }
         return playerList;
     }
@@ -121,7 +121,7 @@ public class CurrentTeam implements RunningTeam {
     @Override
     public boolean isPlayerInTeam(Player player) {
         for (GamePlayer gamePlayer : players) {
-            if (gamePlayer.player.equals(player)) {
+            if (gamePlayer.getInstance().equals(player)) {
                 return true;
             }
         }

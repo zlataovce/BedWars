@@ -17,7 +17,7 @@ import java.util.List;
 
 public class FakeDeath {
     public static void die(GamePlayer gamePlayer) {
-        Player player = gamePlayer.player;
+        Player player = gamePlayer.getInstance();
         if (player.isDead()) {
             return;
         }

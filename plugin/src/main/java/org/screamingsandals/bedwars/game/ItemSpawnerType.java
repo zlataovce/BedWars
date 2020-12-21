@@ -7,50 +7,26 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
-public class ItemSpawnerType implements org.screamingsandals.bedwars.api.game.ItemSpawnerType {
-    private String configKey;
-    private String name;
-    private String translatableKey;
-    private double spread;
-    private Material material;
-    private ChatColor color;
-    private int interval;
-    private int damage;
+import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    public ItemSpawnerType(String configKey, String name, String translatableKey, double spread, Material material,
-                           ChatColor color, int interval, int damage) {
-        this.configKey = configKey;
-        this.name = name;
-        this.translatableKey = translatableKey;
-        this.spread = spread;
-        this.material = material;
-        this.color = color;
-        this.interval = interval;
-        this.damage = damage;
-    }
+@RequiredArgsConstructor
+@Getter
+public class ItemSpawnerType implements org.screamingsandals.bedwars.api.game.ItemSpawnerType {
+    private final String configKey;
+    private final String name;
+    private final String translatableKey;
+    private final double spread;
+    private final Material material;
+    private final ChatColor color;
+    private final int damage;
+
+    private final int interval;
+    private final int amount;
 
     public String getConfigKey() {
         return configKey;
-    }
-
-    public ChatColor getColor() {
-        return color;
-    }
-
-    public int getInterval() {
-        return interval;
-    }
-
-    public double getSpread() {
-        return spread;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Material getMaterial() {
-        return material;
     }
 
     public String getTranslatableKey() {
@@ -68,14 +44,11 @@ public class ItemSpawnerType implements org.screamingsandals.bedwars.api.game.It
         return color.toString() + ChatColor.BOLD.toString() + getTranslatableKey();
     }
 
-    public int getDamage() {
-        return damage;
-    }
-
     public ItemStack getStack() {
         return getStack(1);
     }
 
+    @SuppressWarnings("deprecation")
     public ItemStack getStack(int amount) {
         ItemStack stack = new ItemStack(material, amount, (short) damage);
         ItemMeta stackMeta = stack.getItemMeta();

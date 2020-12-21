@@ -602,7 +602,9 @@ public class GameCreator {
         loc.setPitch(0);
         ItemSpawnerType spawnerType = Main.getSpawnerType(type);
         if (spawnerType != null) {
-            game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, false));
+            game.getSpawners().add(
+                    new ItemSpawner(Main.getInstance(), loc, spawnerType, customName, hologramEnabled,
+                            startLevel, team, maxSpawnedResources, false));
             return i18n("admin_command_spawner_added").replace("%resource%", spawnerType.getItemName())
                     .replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
                     .replace("%z%", Integer.toString(loc.getBlockZ()));
@@ -623,7 +625,7 @@ public class GameCreator {
         }
         int count = 0;
         for (ItemSpawner spawner : new ArrayList<>(game.getSpawners())) {
-            if (spawner.getLocation().getBlock().equals(loc.getBlock())) {
+            if (spawner.getSpawnLocation().getBlock().equals(loc.getBlock())) {
                 game.getSpawners().remove(spawner);
                 count++;
             }
@@ -775,7 +777,7 @@ public class GameCreator {
 
     public String setPauseCountdown(int countdown) {
         if (countdown >= 10 && countdown <= 600) {
-            game.setPauseCountdown(countdown);
+            game.setLobbyCountdown(countdown);
             return i18n("admin_command_pausecontdown_setted").replace("%countdown%", Integer.toString(countdown));
         }
         return i18n("admin_command_invalid_countdown");

@@ -6,7 +6,7 @@ import org.screamingsandals.bedwars.api.game.Game;
  * @author Bedwars Team
  *
  */
-public interface Upgrade {
+public interface Upgradeable {
 	
 	/**
 	 * 
@@ -16,7 +16,7 @@ public interface Upgrade {
 	
 	/**
 	 * 
-	 * @return identificator of this upgrade instance
+	 * @return identification of this upgrade instance
 	 */
 	String getInstanceName();
 	
@@ -51,16 +51,12 @@ public interface Upgrade {
 	 * 
 	 * @param game Game when upgrade is activated
 	 */
-	default void onUpgradeRegistered(Game game) {
-		
-	}
+	void onUpgradeRegistered(Game game);
 	
 	/**
 	 * Called when upgrade is unregistered
 	 * 
 	 * @param game Game when upgrade is deactivated
 	 */
-	default void onUpgradeUnregistered(Game game) {
-		
-	}
+	void onUpgradeUnregistered(Game game);
 }

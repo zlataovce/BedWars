@@ -157,6 +157,12 @@ public interface Game {
 	RunningTeam getTeamOfPlayer(Player player);
 
     /**
+     * @param team
+     * @return active team in game
+     */
+    RunningTeam getRunningTeam(Team team);
+
+    /**
      * @param player
      * @return
      */
@@ -387,6 +393,8 @@ public interface Game {
     boolean isProtectionActive(Player player);
 
     int getPostGameWaiting();
+
+    int getRemainingTime();
 
     default boolean hasCustomPrefix() {
         return getCustomPrefix() != null;

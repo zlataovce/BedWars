@@ -57,7 +57,7 @@ public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
      * @return location
      */
     public Location getLocation() {
-        return this.spawner.getLocation();
+        return this.spawner.getSpawnLocation();
     }
 
     /**
@@ -88,7 +88,7 @@ public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
      * @return spawner type
      */
     public ItemSpawnerType getType() {
-        return this.spawner.getItemSpawnerType();
+        return this.spawner.getType();
     }
 
 }

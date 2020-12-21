@@ -450,34 +450,43 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
 
-        for (var spawnerN : configurator.config.getConfigurationSection("resources").getKeys(false)) {
+        final var spawnersConfig = configurator.config.getConfigurationSection("resources");
 
-            var name = Main.getConfigurator().config.getString("resources." + spawnerN + ".name");
-            var translate = Main.getConfigurator().config.getString("resources." + spawnerN + ".translate");
-            var interval = Main.getConfigurator().config.getInt("resources." + spawnerN + ".interval", 1);
-            var spread = Main.getConfigurator().config.getDouble("resources." + spawnerN + ".spread");
-            var damage = Main.getConfigurator().config.getInt("resources." + spawnerN + ".damage");
-            var materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
-            var colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
-
-            if (damage != 0) {
-                materialName += ":" + damage;
-            }
-
-            var result = MaterialSearchEngine.find(materialName);
-            if (result.getMaterial() == Material.AIR) {
-                continue;
-            }
-
-            ChatColor color;
-            try {
-                color = ChatColor.valueOf(colorName);
-            } catch (IllegalArgumentException ignored) {
-                color = ChatColor.WHITE;
-            }
-            spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
-                    spread, result.getMaterial(), color, interval, result.getDamage()));
+        if (spawnersConfig == null) {
+            getSLF4JLogger().warn("Cannot find any defined resources, fix your configuration!");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
+
+        spawnersConfig.getKeys(false)
+                .forEach(spawnerN -> {
+                    var name = Main.getConfigurator().config.getString("resources." + spawnerN + ".name");
+                    var translate = Main.getConfigurator().config.getString("resources." + spawnerN + ".translate");
+                    var interval = Main.getConfigurator().config.getInt("resources." + spawnerN + ".interval", 1);
+                    var amount = Main.getConfigurator().config.getInt("resources." + spawnerN + ".amount", 1);
+                    var spread = Main.getConfigurator().config.getDouble("resources." + spawnerN + ".spread");
+                    var damage = Main.getConfigurator().config.getInt("resources." + spawnerN + ".damage");
+                    var materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
+                    var colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
+
+                    if (damage != 0) {
+                        materialName += ":" + damage;
+                    }
+
+                    var result = MaterialSearchEngine.find(materialName);
+                    if (result.getMaterial() == Material.AIR) {
+                        return;
+                    }
+
+                    ChatColor color;
+                    try {
+                        color = ChatColor.valueOf(colorName);
+                    } catch (IllegalArgumentException ignored) {
+                        color = ChatColor.WHITE;
+                    }
+                    spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
+                            spread, result.getMaterial(), color, result.getDamage(), interval, amount));
+                });
 
         menu = new ShopInventory();
 

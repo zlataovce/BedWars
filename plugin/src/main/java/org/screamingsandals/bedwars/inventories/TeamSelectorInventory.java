@@ -113,7 +113,7 @@ public class TeamSelectorInventory implements Listener {
             loreList.add(i18nonly("team_select_item_lore"));
 
             for (GamePlayer gamePlayer : playersInTeam) {
-                loreList.add(team.color.chatColor + gamePlayer.player.getDisplayName());
+                loreList.add(team.color.chatColor + gamePlayer.getInstance().getDisplayName());
             }
         }
 

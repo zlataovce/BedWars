@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.api.events;
 
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.upgrades.Upgrade;
+import org.screamingsandals.bedwars.api.upgrades.Upgradeable;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -13,17 +13,17 @@ public class BedwarsUpgradeRegisteredEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Game game;
     private UpgradeStorage storage;
-    private Upgrade upgrade;
+    private Upgradeable upgradeable;
 
     /**
      * @param game
      * @param storage
-     * @param upgrade
+     * @param upgradeable
      */
-    public BedwarsUpgradeRegisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade) {
+    public BedwarsUpgradeRegisteredEvent(Game game, UpgradeStorage storage, Upgradeable upgradeable) {
         this.game = game;
         this.storage = storage;
-        this.upgrade = upgrade;
+        this.upgradeable = upgradeable;
     }
 
     public static HandlerList getHandlerList() {
@@ -45,8 +45,8 @@ public class BedwarsUpgradeRegisteredEvent extends Event {
     /**
      * @return upgrade
      */
-    public Upgrade getUpgrade() {
-        return upgrade;
+    public Upgradeable getUpgrade() {
+        return upgradeable;
     }
 
     /**

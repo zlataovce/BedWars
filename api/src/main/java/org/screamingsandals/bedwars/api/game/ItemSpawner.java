@@ -1,22 +1,37 @@
 package org.screamingsandals.bedwars.api.game;
 
 import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.api.upgrades.Upgrade;
+import org.screamingsandals.bedwars.api.upgrades.Upgradeable;
 import org.bukkit.Location;
 
 /**
  * @author Bedwars Team
  */
-public interface ItemSpawner extends Upgrade {
-    /**
-     * @return
-     */
-    ItemSpawnerType getItemSpawnerType();
+public interface ItemSpawner extends Upgradeable {
+
+    void initialize(Game game);
+
+    void start();
+
+    void stop();
+
+    void changeAmount(int amount);
+
+    void changeInterval(int interval);
+
+    int getCurrentAmount();
+
+    int getCurrentInterval();
 
     /**
      * @return
      */
-    Location getLocation();
+    ItemSpawnerType getType();
+
+    /**
+     * @return
+     */
+    Location getSpawnLocation();
 
     /**
      * @return
@@ -41,12 +56,12 @@ public interface ItemSpawner extends Upgrade {
     /**
      * @return
      */
-    boolean getHologramEnabled();
+    boolean isHologramEnabled();
 
     /**
      * @return
      */
-    boolean getFloatingEnabled();
+    boolean isFloatingEnabled();
 
     /**
      * Sets team of this upgrade

@@ -118,7 +118,7 @@ public class AdminCommand extends BaseCommand {
                             player.sendMessage(i18n("arena_info_min_players", false).replace("%minplayers%",
                                     Integer.toString(game.getMinPlayers())));
                             player.sendMessage(i18n("arena_info_lobby_countdown", false).replace("%time%",
-                                    Integer.toString(game.getPauseCountdown())));
+                                    Integer.toString(game.getLobbyCountdown())));
                             player.sendMessage(i18n("arena_info_game_time", false).replace("%time%",
                                     Integer.toString(game.getGameTime())));
                             m("arena_info_postgamewaiting").replace("time", game.getPostGameWaiting()).send(player);
@@ -159,7 +159,7 @@ public class AdminCommand extends BaseCommand {
 
                             player.sendMessage(i18n("arena_info_spawners", false));
                             for (ItemSpawner spawner : game.getSpawners()) {
-                                Location loc_spawner = spawner.loc;
+                                Location loc_spawner = spawner.getSpawnLocation();
                                 org.screamingsandals.bedwars.api.Team team = spawner.getTeam();
 
                                 String spawnerTeam;
@@ -171,7 +171,7 @@ public class AdminCommand extends BaseCommand {
                                 }
 
                                 String spawnerM = i18n("arena_info_spawner", false)
-                                        .replace("%resource%", spawner.type.getItemName())
+                                        .replace("%resource%", spawner.getType().getItemName())
                                         .replace("%x%", String.valueOf(loc_spawner.getBlockX()))
                                         .replace("%y%", String.valueOf(loc_spawner.getBlockY()))
                                         .replace("%z%", String.valueOf(loc_spawner.getBlockZ()))
@@ -179,7 +179,7 @@ public class AdminCommand extends BaseCommand {
                                         .replace("%pitch%", String.valueOf(loc_spawner.getPitch()))
                                         .replace("%world%", loc_spawner.getWorld().getName())
                                         .replace("%team%", spawnerTeam)
-                                        .replace("%holo%", String.valueOf(spawner.getHologramEnabled()));
+                                        .replace("%holo%", String.valueOf(spawner.isHologramEnabled()));
     
                                 
                                 player.sendMessage(spawnerM);

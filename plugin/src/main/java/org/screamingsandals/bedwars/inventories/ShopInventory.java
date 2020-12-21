@@ -15,7 +15,7 @@ import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
-import org.screamingsandals.bedwars.api.upgrades.Upgrade;
+import org.screamingsandals.bedwars.api.upgrades.Upgradeable;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.CurrentTeam;
@@ -118,37 +118,37 @@ public class ShopInventory implements Listener {
 				if (upgradeStorage == null) {
 					return null;
 				}
-				List<Upgrade> upgrades = null;
+				List<Upgradeable> upgradeables = null;
 				switch (upgradeBy) {
 				case "name":
-					upgrades = upgradeStorage.findItemSpawnerUpgrades(game, upgrade);
+					upgradeables = upgradeStorage.findItemSpawnerUpgrades(game, upgrade);
 					break;
 				case "team":
-					upgrades = upgradeStorage.findItemSpawnerUpgrades(game, game.getPlayerTeam(gPlayer));
+					upgradeables = upgradeStorage.findItemSpawnerUpgrades(game, game.getPlayerTeam(gPlayer));
 					break;
 				}
 
-				if (upgrades != null && !upgrades.isEmpty()) {
+				if (upgradeables != null && !upgradeables.isEmpty()) {
 					String what = "level";
 					if (arguments.length > 3) {
 						what = arguments[2];
 					}
-					double heighest = Double.MIN_VALUE;
+					double highest = Double.MIN_VALUE;
 					switch (what) {
 					case "level":
-						for (Upgrade upgrad : upgrades) {
-							if (upgrad.getLevel() > heighest) {
-								heighest = upgrad.getLevel();
+						for (Upgradeable toUpgradeable : upgradeables) {
+							if (toUpgradeable.getLevel() > highest) {
+								highest = toUpgradeable.getLevel();
 							}
 						}
-						return String.valueOf(heighest);
+						return String.valueOf(highest);
 					case "initial":
-						for (Upgrade upgrad : upgrades) {
-							if (upgrad.getInitialLevel() > heighest) {
-								heighest = upgrad.getInitialLevel();
+						for (Upgradeable upgrad : upgradeables) {
+							if (upgrad.getInitialLevel() > highest) {
+								highest = upgrad.getInitialLevel();
 							}
 						}
-						return String.valueOf(heighest);
+						return String.valueOf(highest);
 					}
 				}
 			}
@@ -493,26 +493,26 @@ public class ShopInventory implements Listener {
 					}
 					sendToAll = mapEntity.getBoolean("notify-team", false);
 
-					List<Upgrade> upgrades = new ArrayList<>();
+					List<Upgradeable> upgradeables = new ArrayList<>();
 
 					if (mapEntity.containsKey("spawner-name")) {
 						String customName = mapEntity.getString("spawner-name");
-						upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
+						upgradeables = upgradeStorage.findItemSpawnerUpgrades(game, customName);
 					} else if (mapEntity.containsKey("spawner-type")) {
 						String mapSpawnerType = mapEntity.getString("spawner-type");
 						ItemSpawnerType spawnerType = Main.getSpawnerType(mapSpawnerType);
 
-						upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
+						upgradeables = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
 					} else if (mapEntity.containsKey("team-upgrade")) {
 						boolean upgradeAllSpawnersInTeam = mapEntity.getBoolean("team-upgrade");
 
 						if (upgradeAllSpawnersInTeam) {
-							upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team);
+							upgradeables = upgradeStorage.findItemSpawnerUpgrades(game, team);
 						}
 
 					} else if (mapEntity.containsKey("customName")) { // Old configuration
 						String customName = mapEntity.getString("customName");
-						upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
+						upgradeables = upgradeStorage.findItemSpawnerUpgrades(game, customName);
 					} else {
 						isUpgrade = false;
 						Debugger.warn("[BedWars]> Upgrade configuration is invalid.");
@@ -520,20 +520,20 @@ public class ShopInventory implements Listener {
 
 					if (isUpgrade) {
 						BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game,
-							upgradeStorage, upgrades, player, addLevels);
+							upgradeStorage, upgradeables, player, addLevels);
 						Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
 
 						if (bedwarsUpgradeBoughtEvent.isCancelled()) {
 							continue;
 						}
 
-						if (upgrades.isEmpty()) {
+						if (upgradeables.isEmpty()) {
 							continue;
 						}
 
-						for (Upgrade upgrade : upgrades) {
+						for (Upgradeable upgradeable : upgradeables) {
 							BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game,
-								upgradeStorage, upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
+								upgradeStorage, upgradeable, upgradeable.getLevel(), upgradeable.getLevel() + addLevels);
 							Bukkit.getPluginManager().callEvent(improvedEvent);
 						}
 					}

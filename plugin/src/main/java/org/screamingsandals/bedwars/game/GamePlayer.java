@@ -7,29 +7,31 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import lombok.Getter;
+
 public class GamePlayer {
-    public final Player player;
+    private final List<Player> hiddenPlayers = new LinkedList<>();
+    private final List<ItemStack> permaItemsPurchased = new LinkedList<>();
+    private final StoredInventory oldInventory = new StoredInventory();
+    @Getter
+    private final Player instance;
     private Game game = null;
     private String latestGame = null;
-    private StoredInventory oldInventory = new StoredInventory();
-    private List<ItemStack> permaItemsPurchased = new ArrayList<>();
-    private List<Player> hiddenPlayers = new ArrayList<>();
     private ItemStack[] armorContents = null;
 
     public boolean isSpectator = false;
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
     public boolean mainLobbyUsed = false;
 
-    public GamePlayer(Player player) {
-        this.player = player;
+    public GamePlayer(Player instance) {
+        this.instance = instance;
     }
 
     public void changeGame(Game game) {
@@ -39,7 +41,7 @@ public class GamePlayer {
             this.isSpectator = false;
             this.clean();
             if (Game.isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(player, Main.isDisabling());
+                BungeeUtils.movePlayerToBungeeServer(instance, Main.isDisabling());
             } else {
                 this.restoreInv();
             }
@@ -79,7 +81,7 @@ public class GamePlayer {
     }
 
     public boolean canJoinFullGame() {
-        return player.hasPermission("bw.vip.forcejoin");
+        return instance.hasPermission("bw.vip.forcejoin");
     }
 
     public List<ItemStack> getPermaItemsPurchased() {
@@ -95,16 +97,16 @@ public class GamePlayer {
     }
 
     public void storeInv() {
-        oldInventory.inventory = player.getInventory().getContents();
-        oldInventory.armor = player.getInventory().getArmorContents();
-        oldInventory.xp = player.getExp();
-        oldInventory.effects = player.getActivePotionEffects();
-        oldInventory.mode = player.getGameMode();
-        oldInventory.leftLocation = player.getLocation();
-        oldInventory.level = player.getLevel();
-        oldInventory.listName = player.getPlayerListName();
-        oldInventory.displayName = player.getDisplayName();
-        oldInventory.foodLevel = player.getFoodLevel();
+        oldInventory.inventory = instance.getInventory().getContents();
+        oldInventory.armor = instance.getInventory().getArmorContents();
+        oldInventory.xp = instance.getExp();
+        oldInventory.effects = instance.getActivePotionEffects();
+        oldInventory.mode = instance.getGameMode();
+        oldInventory.leftLocation = instance.getLocation();
+        oldInventory.level = instance.getLevel();
+        oldInventory.listName = instance.getPlayerListName();
+        oldInventory.displayName = instance.getDisplayName();
+        oldInventory.foodLevel = instance.getFoodLevel();
     }
 
     public void restoreInv() {
@@ -114,66 +116,63 @@ public class GamePlayer {
         }
         mainLobbyUsed = false;
 
-        player.getInventory().setContents(oldInventory.inventory);
-        player.getInventory().setArmorContents(oldInventory.armor);
+        instance.getInventory().setContents(oldInventory.inventory);
+        instance.getInventory().setArmorContents(oldInventory.armor);
 
-        player.addPotionEffects(oldInventory.effects);
-        player.setLevel(oldInventory.level);
-        player.setExp(oldInventory.xp);
-        player.setFoodLevel(oldInventory.foodLevel);
+        instance.addPotionEffects(oldInventory.effects);
+        instance.setLevel(oldInventory.level);
+        instance.setExp(oldInventory.xp);
+        instance.setFoodLevel(oldInventory.foodLevel);
 
-        for (PotionEffect e : player.getActivePotionEffects())
-            player.removePotionEffect(e.getType());
+        for (PotionEffect e : instance.getActivePotionEffects())
+            instance.removePotionEffect(e.getType());
 
-        player.addPotionEffects(oldInventory.effects);
+        instance.addPotionEffects(oldInventory.effects);
 
-        player.setPlayerListName(oldInventory.listName);
-        player.setDisplayName(oldInventory.displayName);
+        instance.setPlayerListName(oldInventory.listName);
+        instance.setDisplayName(oldInventory.displayName);
 
-        player.setGameMode(oldInventory.mode);
+        instance.setGameMode(oldInventory.mode);
 
-        if (oldInventory.mode == GameMode.CREATIVE)
-            player.setAllowFlight(true);
-        else
-            player.setAllowFlight(false);
+        instance.setAllowFlight(oldInventory.mode == GameMode.CREATIVE);
 
-        player.updateInventory();
-        player.resetPlayerTime();
-        player.resetPlayerWeather();
+        instance.updateInventory();
+        instance.resetPlayerTime();
+        instance.resetPlayerWeather();
     }
 
     public void resetLife() {
-        this.player.setAllowFlight(false);
-        this.player.setFlying(false);
-        this.player.setExp(0.0F);
-        this.player.setLevel(0);
-        this.player.setSneaking(false);
-        this.player.setSprinting(false);
-        this.player.setFoodLevel(20);
-        this.player.setSaturation(10);
-        this.player.setExhaustion(0);
-        this.player.setMaxHealth(20D);
-        this.player.setHealth(this.player.getMaxHealth());
-        this.player.setFireTicks(0);
-        this.player.setFallDistance(0);
-        this.player.setGameMode(GameMode.SURVIVAL);
+        this.instance.setAllowFlight(false);
+        this.instance.setFlying(false);
+        this.instance.setExp(0.0F);
+        this.instance.setLevel(0);
+        this.instance.setSneaking(false);
+        this.instance.setSprinting(false);
+        this.instance.setFoodLevel(20);
+        this.instance.setSaturation(10);
+        this.instance.setExhaustion(0);
+        this.instance.setMaxHealth(20D);
+        this.instance.setHealth(this.instance.getMaxHealth());
+        this.instance.setFireTicks(0);
+        this.instance.setFallDistance(0);
+        this.instance.setGameMode(GameMode.SURVIVAL);
 
-        if (this.player.isInsideVehicle()) {
-            this.player.leaveVehicle();
+        if (this.instance.isInsideVehicle()) {
+            this.instance.leaveVehicle();
         }
 
-        for (PotionEffect e : this.player.getActivePotionEffects()) {
-            this.player.removePotionEffect(e.getType());
+        for (PotionEffect e : this.instance.getActivePotionEffects()) {
+            this.instance.removePotionEffect(e.getType());
         }
     }
 
     public void invClean() {
-        PlayerInventory inv = this.player.getInventory();
+        PlayerInventory inv = this.instance.getInventory();
         inv.setArmorContents(new ItemStack[4]);
         inv.setContents(new ItemStack[]{});
 
         this.armorContents = null;
-        this.player.updateInventory();
+        this.instance.updateInventory();
     }
 
     public void clean() {
@@ -184,31 +183,32 @@ public class GamePlayer {
     }
 
     public boolean teleport(Location location) {
-    	return PlayerUtils.teleportPlayer(player, location);
+    	return PlayerUtils.teleportPlayer(instance, location);
     }
 
     public boolean teleport(Location location, Runnable runnable) {
-        return PlayerUtils.teleportPlayer(player, location, runnable);
+        return PlayerUtils.teleportPlayer(instance, location, runnable);
     }
 
     public void hidePlayer(Player player) {
-        if (!hiddenPlayers.contains(player) && !player.equals(this.player)) {
+        if (!hiddenPlayers.contains(player) && !player.equals(this.instance)) {
             hiddenPlayers.add(player);
             try {
-                this.player.hidePlayer(Main.getInstance(), player);
+                this.instance.hidePlayer(Main.getInstance(), player);
             } catch (Throwable t) {
-                this.player.hidePlayer(player);
+                this.instance.hidePlayer(player);
             }
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void showPlayer(Player player) {
-        if (hiddenPlayers.contains(player) && !player.equals(this.player)) {
+        if (hiddenPlayers.contains(player) && !player.equals(this.instance)) {
             hiddenPlayers.remove(player);
             try {
-                this.player.showPlayer(Main.getInstance(), player);
+                this.instance.showPlayer(Main.getInstance(), player);
             } catch (Throwable t) {
-                this.player.showPlayer(player);
+                this.instance.showPlayer(player);
             }
         }
 

@@ -18,11 +18,13 @@ import org.bukkit.plugin.Plugin;
  */
 public class APIUtils {
 	public static final String BEDWARS_NAMESPACED_KEY = "screaming-bedwars-hidden-api";
+	private static final Gson gson = new Gson();
 
 	/**
 	 * @param stack
 	 * @param hash
 	 */
+	@SuppressWarnings("unchecked")
 	public static void hashIntoInvisibleString(ItemStack stack, String hash) {
 		ItemMeta meta = stack.getItemMeta();
 		try {
@@ -31,10 +33,10 @@ public class APIUtils {
 			List<String> propertyLines = new ArrayList<>();
 			if (container.has(key, PersistentDataType.STRING)) {
 				String oldString = container.get(key, PersistentDataType.STRING);
-				propertyLines.addAll((List<String>) new Gson().fromJson(oldString, List.class));
+				propertyLines.addAll((List<String>) gson.fromJson(oldString, List.class));
 			}
 			propertyLines.add(hash);
-			container.set(key, PersistentDataType.STRING, new Gson().toJson(propertyLines));
+			container.set(key, PersistentDataType.STRING, gson.toJson(propertyLines));
 		} catch (Throwable ignored) {
 			// Use the Lore API instead
 			List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
@@ -50,6 +52,7 @@ public class APIUtils {
 	 * @param startsWith
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static String unhashFromInvisibleStringStartsWith(ItemStack stack, String startsWith) {
 		ItemMeta meta = stack.getItemMeta();
 		try {
@@ -57,7 +60,7 @@ public class APIUtils {
 			PersistentDataContainer container = meta.getPersistentDataContainer();
 			if (container.has(key, PersistentDataType.STRING)) {
 				String oldString = container.get(key, PersistentDataType.STRING);
-				List<String> propertyLines = (List<String>) new Gson().fromJson(oldString, List.class);
+				List<String> propertyLines = (List<String>) gson.fromJson(oldString, List.class);
 				for (String unhidden : propertyLines) {
 					if (unhidden.startsWith(startsWith)) {
 						return unhidden;
@@ -86,6 +89,7 @@ public class APIUtils {
 	 * @param hash
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static boolean unhashFromInvisibleString(ItemStack stack, String hash) {
 		ItemMeta meta = stack.getItemMeta();
 		try {
@@ -93,7 +97,7 @@ public class APIUtils {
 			PersistentDataContainer container = meta.getPersistentDataContainer();
 			if (container.has(key, PersistentDataType.STRING)) {
 				String oldString = container.get(key, PersistentDataType.STRING);
-				List<String> propertyLines = (List<String>) new Gson().fromJson(oldString, List.class);
+				List<String> propertyLines = (List<String>) gson.fromJson(oldString, List.class);
 				for (String unhidden : propertyLines) {
 					if (unhidden.equals(hash)) {
 						return true;

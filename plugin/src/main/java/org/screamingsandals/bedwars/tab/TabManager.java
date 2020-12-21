@@ -24,7 +24,7 @@ public class TabManager {
     }
 
     public void modifyForPlayer(GamePlayer player) {
-        if (player.player.isOnline() && (header != null || footer != null)) {
+        if (player.getInstance().isOnline() && (header != null || footer != null)) {
             try {
                 Object packet = PacketPlayOutPlayerListHeaderFooter.getConstructor().newInstance();
                 if (header != null) {
@@ -41,7 +41,7 @@ public class TabManager {
                     setField(packet, "footer, b, field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
                             .invokeStatic("{\"text\": \"\"}"));
                 }
-                sendPacket(player.player, packet);
+                sendPacket(player.getInstance(), packet);
             } catch (Exception ignored) {
 
             }
@@ -49,14 +49,14 @@ public class TabManager {
     }
 
     public void clear(GamePlayer player) {
-        if (player.player.isOnline() && (header != null || footer != null)) {
+        if (player.getInstance().isOnline() && (header != null || footer != null)) {
             try {
                 Object packet = PacketPlayOutPlayerListHeaderFooter.getConstructor().newInstance();
                 setField(packet, "header, a, field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
                         .invokeStatic("{\"text\": \"\"}"));
                 setField(packet, "footer, b, field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
                         .invokeStatic("{\"text\": \"\"}"));
-                sendPacket(player.player, packet);
+                sendPacket(player.getInstance(), packet);
             } catch (Exception ignored) {
             }
         }

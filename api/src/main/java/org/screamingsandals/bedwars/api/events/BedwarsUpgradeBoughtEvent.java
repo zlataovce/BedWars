@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.api.events;
 
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.upgrades.Upgrade;
+import org.screamingsandals.bedwars.api.upgrades.Upgradeable;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -17,7 +17,7 @@ public class BedwarsUpgradeBoughtEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled = false;
     private Game game;
-    private List<Upgrade> upgrades;
+    private List<Upgradeable> upgradeables;
     private Player customer;
     private UpgradeStorage storage;
     private double addLevels;
@@ -25,14 +25,14 @@ public class BedwarsUpgradeBoughtEvent extends Event implements Cancellable {
     /**
      * @param game
      * @param storage
-     * @param upgrades
+     * @param upgradeables
      * @param customer
      * @param addLevels
      */
-    public BedwarsUpgradeBoughtEvent(Game game, UpgradeStorage storage, List<Upgrade> upgrades, Player customer,
-									 double addLevels) {
+    public BedwarsUpgradeBoughtEvent(Game game, UpgradeStorage storage, List<Upgradeable> upgradeables, Player customer,
+                                     double addLevels) {
         this.game = game;
-        this.upgrades = upgrades;
+        this.upgradeables = upgradeables;
         this.customer = customer;
         this.addLevels = addLevels;
         this.storage = storage;
@@ -67,8 +67,8 @@ public class BedwarsUpgradeBoughtEvent extends Event implements Cancellable {
     /**
      * @return list of upgrades
      */
-    public List<Upgrade> getUpgrades() {
-        return upgrades;
+    public List<Upgradeable> getUpgrades() {
+        return upgradeables;
     }
 
     /**

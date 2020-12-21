@@ -9,14 +9,22 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface ItemSpawnerType {
     /**
-     * @return
+     * Configuration key for loading the spawner
+     * @return String
      */
     String getConfigKey();
 
     /**
-     * @return
+     * Color of the spawner (text, etc)
+     * @return ChatColor
      */
     ChatColor getColor();
+
+    /**
+     * Amount to spawn per one interval
+     * @return Amount
+     */
+    int getAmount();
 
     /**
      * @return
@@ -52,11 +60,6 @@ public interface ItemSpawnerType {
      * @return
      */
     String getItemBoldName();
-
-    /**
-     * @return
-     */
-    int getDamage();
 
     /**
      * @return

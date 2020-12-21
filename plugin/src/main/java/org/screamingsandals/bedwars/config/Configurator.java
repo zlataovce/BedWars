@@ -196,8 +196,8 @@ public class Configurator {
                 put("bronze", new HashMap<String, Object>() {
                     {
                         put("material", Main.isLegacy() ? "CLAY_BRICK" : "BRICK");
-                        /* Config migration 1 -> 2: if spawners.bronze exists, get this value */
-                        put("interval", config.getInt("spawners.bronze", 1));
+                        put("interval", 1);
+                        put("amount", 1);
                         put("name", "Bronze");
                         put("translate", "resource_bronze");
                         put("color", "DARK_RED");
@@ -207,8 +207,8 @@ public class Configurator {
                 put("iron", new HashMap<String, Object>() {
                     {
                         put("material", "IRON_INGOT");
-                        /* Config migration 1 -> 2: if spawners.iron exists, get this value */
-                        put("interval", config.getInt("spawners.iron", 10));
+                        put("interval", 10);
+                        put("amount", 1);
                         put("name", "Iron");
                         put("translate", "resource_iron");
                         put("color", "GRAY");
@@ -218,8 +218,8 @@ public class Configurator {
                 put("gold", new HashMap<String, Object>() {
                     {
                         put("material", "GOLD_INGOT");
-                        /* Config migration 1 -> 2: if spawners.gold exists, get this value */
-                        put("interval", config.getInt("spawners.gold", 20));
+                        put("interval", 20);
+                        put("amount", 1);
                         put("name", "Gold");
                         put("translate", "resource_gold");
                         put("color", "GOLD");
@@ -228,11 +228,6 @@ public class Configurator {
                 });
             }
         });
-        if (config.contains("spawners")) {
-            /* Config migration 1 -> 2: After creating resources, remove old spawners */
-            modify.set(true);
-            config.set("spawners", null);
-        }
 
         checkOrSetConfig(modify, "respawn.protection-enabled", true);
         checkOrSetConfig(modify, "respawn.protection-time", 10);
@@ -300,7 +295,7 @@ public class Configurator {
             {
                 put("type", "Firework");
                 put("power", 1);
-                put("effects", new ArrayList<Object>() {
+                put("effects", new ArrayList<>() {
                     {
                         add(FireworkEffect.builder().with(FireworkEffect.Type.BALL).trail(false).flicker(false)
                                 .withColor(Color.WHITE).withFade(Color.WHITE).build());

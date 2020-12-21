@@ -24,7 +24,7 @@ public final class UpgradeRegistry {
      * @param upgradeClass Class type of upgrade
      * @return new instance of upgrade storage
      */
-    public static UpgradeStorage registerUpgrade(String name, Class<? extends Upgrade> upgradeClass) {
+    public static UpgradeStorage registerUpgrade(String name, Class<? extends Upgradeable> upgradeClass) {
         UpgradeStorage storage = new UpgradeStorage(name, upgradeClass);
         registeredUpgrades.put(name, storage);
         return storage;

@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.listener;
 
 import net.milkbowl.vault.chat.Chat;
+
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -189,7 +190,7 @@ public class PlayerListener implements Listener {
                 new BukkitRunnable() {
                     int livingTime = respawnTime;
                     GamePlayer gamePlayer = gVictim;
-                    Player player = gamePlayer.player;
+                    Player player = gamePlayer.getInstance();
 
                     @Override
                     public void run() {
@@ -312,29 +313,25 @@ public class PlayerListener implements Listener {
                 Main.getInstance().getServer().getPluginManager().callEvent(respawnEvent);
 
                 if (Main.getConfigurator().config.getBoolean("respawn.protection-enabled", true)) {
-                    RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.player);
+                    RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.getInstance());
                     respawnProtection.runProtection();
                 }
 
-                SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
+                SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.getInstance(), "game-effects.respawn");
                 if (gPlayer.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.ENABLE_PLAYER_RESPAWN_ITEMS, Boolean.class, false)) {
                     List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
                             .getList("gived-player-respawn-items"));
-                    if (givedGameStartItems != null) {
-                        MiscUtils.giveItemsToPlayer(givedGameStartItems, gPlayer.player, team.getColor());
-                    } else {
-                        Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
-                    }
+                    MiscUtils.giveItemsToPlayer(givedGameStartItems, gPlayer.getInstance(), team.getColor());
                 }
 
                 if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
                     final ItemStack[] armorContents = gPlayer.getGameArmorContents();
                     if (armorContents != null) {
-                        gPlayer.player.getInventory().setArmorContents(armorContents);
+                        gPlayer.getInstance().getInventory().setArmorContents(armorContents);
                     }
                 }
 
-                MiscUtils.giveItemsToPlayer(gPlayer.getPermaItemsPurchased(), gPlayer.player, team.getColor());
+                MiscUtils.giveItemsToPlayer(gPlayer.getPermaItemsPurchased(), gPlayer.getInstance(), team.getColor());
             }
         }
     }
@@ -609,13 +606,13 @@ public class PlayerListener implements Listener {
             Game game = gPlayer.getGame();
             if (gPlayer.isSpectator) {
                 if (event.getCause() == DamageCause.VOID) {
-                    gPlayer.player.setFallDistance(0);
+                    gPlayer.getInstance().setFallDistance(0);
                     gPlayer.teleport(game.getSpecSpawn());
                 }
                 event.setCancelled(true);
             } else if (game.getStatus() == GameStatus.WAITING) {
                 if (event.getCause() == DamageCause.VOID) {
-                    gPlayer.player.setFallDistance(0);
+                    gPlayer.getInstance().setFallDistance(0);
                     gPlayer.teleport(game.getLobbySpawn());
                 }
                 event.setCancelled(true);
@@ -666,7 +663,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerArmorStandManipulateEvent (PlayerArmorStandManipulateEvent  e) {
+    public void onPlayerArmorStandManipulateEvent(PlayerArmorStandManipulateEvent e) {
         final ArmorStand armorStand = e.getRightClicked();
 
         //this will make sure no players can interact with the rotating generators.
@@ -717,7 +714,7 @@ public class PlayerListener implements Listener {
 
         Player player = event.getPlayer();
         if (Main.isPlayerInGame(player) && !Main.getPlayerGameProfile(player).isSpectator
-               && (!player.hasPermission("bw.bypass.flight") && Main.getConfigurator().config.getBoolean("disable-flight"))) {
+                && (!player.hasPermission("bw.bypass.flight") && Main.getConfigurator().config.getBoolean("disable-flight"))) {
             event.setCancelled(true);
             Debug.info(player.getName() + " tried to fly, canceled");
         }

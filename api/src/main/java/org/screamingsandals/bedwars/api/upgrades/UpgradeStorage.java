@@ -18,15 +18,15 @@ import java.util.Map;
  */
 public final class UpgradeStorage {
     private final String upgradeName;
-    private final Class<? extends Upgrade> upgradeClass;
+    private final Class<? extends Upgradeable> upgradeClass;
 
-    private final Map<Game, List<Upgrade>> upgradeRegistry = new HashMap<>();
+    private final Map<Game, List<Upgradeable>> upgradeRegistry = new HashMap<>();
 
     /**
      * @param upgradeName  Upgrade Name
      * @param upgradeClass Upgrade Class
      */
-    UpgradeStorage(String upgradeName, Class<? extends Upgrade> upgradeClass) {
+    UpgradeStorage(String upgradeName, Class<? extends Upgradeable> upgradeClass) {
         this.upgradeName = upgradeName;
         this.upgradeClass = upgradeClass;
     }
@@ -41,7 +41,7 @@ public final class UpgradeStorage {
     /**
      * @return upgrade class type
      */
-    public Class<? extends Upgrade> getUpgradeClass() {
+    public Class<? extends Upgradeable> getUpgradeClass() {
         return upgradeClass;
     }
 
@@ -49,20 +49,20 @@ public final class UpgradeStorage {
      * Register active upgrade in game
      *
      * @param game    Game
-     * @param upgrade Upgrade
+     * @param upgradeable Upgrade
      */
-    public void addUpgrade(Game game, Upgrade upgrade) {
-        if (!upgradeClass.isInstance(upgrade)) {
+    public void addUpgrade(Game game, Upgradeable upgradeable) {
+        if (!upgradeClass.isInstance(upgradeable)) {
             return;
         }
 
         if (!upgradeRegistry.containsKey(game)) {
             upgradeRegistry.put(game, new ArrayList<>());
         }
-        if (!upgradeRegistry.get(game).contains(upgrade)) {
-            upgrade.onUpgradeRegistered(game);
-            Bukkit.getPluginManager().callEvent(new BedwarsUpgradeRegisteredEvent(game, this, upgrade));
-            upgradeRegistry.get(game).add(upgrade);
+        if (!upgradeRegistry.get(game).contains(upgradeable)) {
+            upgradeable.onUpgradeRegistered(game);
+            Bukkit.getPluginManager().callEvent(new BedwarsUpgradeRegisteredEvent(game, this, upgradeable));
+            upgradeRegistry.get(game).add(upgradeable);
         }
     }
 
@@ -70,33 +70,33 @@ public final class UpgradeStorage {
      * Unregister active upgrade
      *
      * @param game    Game
-     * @param upgrade Upgrade
+     * @param upgradeable Upgrade
      */
-    public void removeUpgrade(Game game, Upgrade upgrade) {
-        if (!upgradeClass.isInstance(upgrade)) {
+    public void removeUpgrade(Game game, Upgradeable upgradeable) {
+        if (!upgradeClass.isInstance(upgradeable)) {
             return;
         }
 
         if (upgradeRegistry.containsKey(game)) {
-            if (upgradeRegistry.get(game).contains(upgrade)) {
-                upgrade.onUpgradeUnregistered(game);
-                Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgrade));
-                upgradeRegistry.get(game).remove(upgrade);
+            if (upgradeRegistry.get(game).contains(upgradeable)) {
+                upgradeable.onUpgradeUnregistered(game);
+                Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgradeable));
+                upgradeRegistry.get(game).remove(upgradeable);
             }
         }
     }
 
     /**
      * @param game    Game
-     * @param upgrade Upgrade
+     * @param upgradeable Upgrade
      * @return true if upgrade is registered
      */
-    public boolean isUpgradeRegistered(Game game, Upgrade upgrade) {
-        if (!upgradeClass.isInstance(upgrade)) {
+    public boolean isUpgradeRegistered(Game game, Upgradeable upgradeable) {
+        if (!upgradeClass.isInstance(upgradeable)) {
             return false;
         }
 
-        return upgradeRegistry.containsKey(game) && upgradeRegistry.get(game).contains(upgrade);
+        return upgradeRegistry.containsKey(game) && upgradeRegistry.get(game).contains(upgradeable);
     }
 
     /**
@@ -106,9 +106,9 @@ public final class UpgradeStorage {
      */
     public void resetUpgradesForGame(Game game) {
         if (upgradeRegistry.containsKey(game)) {
-            for (Upgrade upgrade : upgradeRegistry.get(game)) {
-                upgrade.onUpgradeUnregistered(game);
-                Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgrade));
+            for (Upgradeable upgradeable : upgradeRegistry.get(game)) {
+                upgradeable.onUpgradeUnregistered(game);
+                Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgradeable));
             }
             upgradeRegistry.get(game).clear();
             upgradeRegistry.remove(game);
@@ -121,12 +121,12 @@ public final class UpgradeStorage {
      * @param game Game
      * @return ĺist of registered upgrades of game
      */
-    public List<Upgrade> getAllUpgradesOfGame(Game game) {
-        List<Upgrade> upgrade = new ArrayList<>();
+    public List<Upgradeable> getAllUpgradesOfGame(Game game) {
+        List<Upgradeable> upgradeable = new ArrayList<>();
         if (upgradeRegistry.containsKey(game)) {
-            upgrade.addAll(upgradeRegistry.get(game));
+            upgradeable.addAll(upgradeRegistry.get(game));
         }
-        return upgrade;
+        return upgradeable;
     }
 
     /**
@@ -137,74 +137,74 @@ public final class UpgradeStorage {
      * @return list of upgrades with same name
      */
     @Deprecated
-    public List<Upgrade> findUpgradeByName(Game game, String instanceName) {
-        List<Upgrade> upgrades = new ArrayList<>();
+    public List<Upgradeable> findUpgradeByName(Game game, String instanceName) {
+        List<Upgradeable> upgradeables = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
-            for (Upgrade upgrade : upgradeRegistry.get(game)) {
-                if (instanceName.equals(upgrade.getInstanceName())) {
-                    upgrades.add(upgrade);
+            for (Upgradeable upgradeable : upgradeRegistry.get(game)) {
+                if (instanceName.equals(upgradeable.getInstanceName())) {
+                    upgradeables.add(upgradeable);
                 }
             }
         }
 
-        return upgrades;
+        return upgradeables;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game game, String spawnerInstanceName) {
-        List<Upgrade> upgrades = new ArrayList<>();
+    public List<Upgradeable> findItemSpawnerUpgrades(Game game, String spawnerInstanceName) {
+        List<Upgradeable> upgradeables = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
-            for (Upgrade upgrade : upgradeRegistry.get(game)) {
-                if (upgrade instanceof ItemSpawner) {
-                    ItemSpawner itemSpawner = (ItemSpawner) upgrade;
+            for (Upgradeable upgradeable : upgradeRegistry.get(game)) {
+                if (upgradeable instanceof ItemSpawner) {
+                    ItemSpawner itemSpawner = (ItemSpawner) upgradeable;
 
                     if (spawnerInstanceName.equals(itemSpawner.getInstanceName())) {
-                        upgrades.add(itemSpawner);
+                        upgradeables.add(itemSpawner);
                     }
                 }
             }
         }
-        return upgrades;
+        return upgradeables;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game game, Team team) {
-        List<Upgrade> upgrades = new ArrayList<>();
+    public List<Upgradeable> findItemSpawnerUpgrades(Game game, Team team) {
+        List<Upgradeable> upgradeables = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
-            for (Upgrade upgrade : upgradeRegistry.get(game)) {
-                if (upgrade instanceof ItemSpawner) {
-                    ItemSpawner itemSpawner = (ItemSpawner) upgrade;
+            for (Upgradeable upgradeable : upgradeRegistry.get(game)) {
+                if (upgradeable instanceof ItemSpawner) {
+                    ItemSpawner itemSpawner = (ItemSpawner) upgradeable;
                     if (itemSpawner.getTeam() == null) {
                         continue;
                     }
 
                     if (team.getName().equals(itemSpawner.getTeam().getName())) {
-                        upgrades.add(upgrade);
+                        upgradeables.add(upgradeable);
                     }
                 }
             }
         }
-        return upgrades;
+        return upgradeables;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game game, Team team, ItemSpawnerType itemSpawnerType) {
-        List<Upgrade> upgrades = new ArrayList<>();
+    public List<Upgradeable> findItemSpawnerUpgrades(Game game, Team team, ItemSpawnerType itemSpawnerType) {
+        List<Upgradeable> upgradeables = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
-            for (Upgrade upgrade : upgradeRegistry.get(game)) {
-                if (upgrade instanceof ItemSpawner) {
-                    ItemSpawner itemSpawner = (ItemSpawner) upgrade;
+            for (Upgradeable upgradeable : upgradeRegistry.get(game)) {
+                if (upgradeable instanceof ItemSpawner) {
+                    ItemSpawner itemSpawner = (ItemSpawner) upgradeable;
                     if (itemSpawner.getTeam() == null) {
                         continue;
                     }
 
-                    if (team.getName().equals(itemSpawner.getTeam().getName()) && itemSpawnerType.getName().equals(itemSpawner.getItemSpawnerType().getName())) {
-                        upgrades.add(upgrade);
+                    if (team.getName().equals(itemSpawner.getTeam().getName()) && itemSpawnerType.getName().equals(itemSpawner.getType().getName())) {
+                        upgradeables.add(upgradeable);
                     }
                 }
             }
         }
-        return upgrades;
+        return upgradeables;
     }
 }
