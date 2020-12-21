@@ -200,7 +200,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         } else {
                             CurrentTeam team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return team.teamInfo.color.chatColor + team.getName();
+                                return team.getTeamInfo().color.chatColor + team.getName();
                             } else {
                                 return ChatColor.RED + "none";
                             }
@@ -217,7 +217,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         } else {
                             CurrentTeam team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return team.teamInfo.color.chatColor.toString();
+                                return team.getTeamInfo().color.chatColor.toString();
                             } else {
                                 return ChatColor.GRAY.toString();
                             }

@@ -95,13 +95,13 @@ public class ShopInventory implements Listener {
 				String fa = arguments[0];
 				switch (fa) {
 				case "color":
-					return team.teamInfo.color.name();
+					return team.getTeamInfo().color.name();
 				case "chatcolor":
-					return team.teamInfo.color.chatColor.toString();
+					return team.getTeamInfo().color.chatColor.toString();
 				case "maxplayers":
-					return Integer.toString(team.teamInfo.maxPlayers);
+					return Integer.toString(team.getTeamInfo().maxPlayers);
 				case "players":
-					return Integer.toString(team.players.size());
+					return Integer.toString(team.getPlayers().size());
 				case "hasBed":
 					return Boolean.toString(team.isBed);
 				}
@@ -282,7 +282,7 @@ public class ShopInventory implements Listener {
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
 			if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
-				event.setStack(Main.applyColor(team.teamInfo.color, event.getStack()));
+				event.setStack(Main.applyColor(team.getTeamInfo().color, event.getStack()));
 			}
 		}
 	}

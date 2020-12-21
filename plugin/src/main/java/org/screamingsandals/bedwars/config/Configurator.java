@@ -198,6 +198,7 @@ public class Configurator {
                         put("material", Main.isLegacy() ? "CLAY_BRICK" : "BRICK");
                         put("interval", 1);
                         put("amount", 1);
+                        put("time-unit", "SECONDS");
                         put("name", "Bronze");
                         put("translate", "resource_bronze");
                         put("color", "DARK_RED");
@@ -209,6 +210,7 @@ public class Configurator {
                         put("material", "IRON_INGOT");
                         put("interval", 10);
                         put("amount", 1);
+                        put("time-unit", "SECONDS");
                         put("name", "Iron");
                         put("translate", "resource_iron");
                         put("color", "GRAY");
@@ -220,6 +222,7 @@ public class Configurator {
                         put("material", "GOLD_INGOT");
                         put("interval", 20);
                         put("amount", 1);
+                        put("time-unit", "SECONDS");
                         put("name", "Gold");
                         put("translate", "resource_gold");
                         put("color", "GOLD");

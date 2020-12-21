@@ -60,7 +60,7 @@ public class PlayerListener implements Listener {
             GamePlayer gVictim = Main.getPlayerGameProfile(victim);
             Game game = gVictim.getGame();
             CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
-            ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
+            ChatColor victimColor = victimTeam.getTeamInfo().color.chatColor;
             List<ItemStack> drops = new ArrayList<>(event.getDrops());
             int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown.time", 5);
 
@@ -85,7 +85,7 @@ public class PlayerListener implements Listener {
                             Player killer = event.getEntity().getKiller();
                             GamePlayer gKiller = Main.getPlayerGameProfile(killer);
                             CurrentTeam killerTeam = game.getPlayerTeam(gKiller);
-                            ChatColor killerColor = killerTeam.teamInfo.color.chatColor;
+                            ChatColor killerColor = killerTeam.getTeamInfo().color.chatColor;
 
                             deathMessage = i18nc("player_killed", game.getCustomPrefix())
                                     .replace("%victim%", victimColor + victim.getDisplayName())
@@ -110,13 +110,14 @@ public class PlayerListener implements Listener {
                 CurrentTeam team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
                 boolean isBed = team.isBed;
-                if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false) && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())) {
+                if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false)
+                        && "RESPAWN_ANCHOR".equals(team.getTeamInfo().bed.getBlock().getType().name())) {
                     isBed = Player116ListenerUtils.processAnchorDeath(game, team, isBed);
                 }
                 if (!isBed) {
                     Debug.info(victim.getName() + " died without bed, he's going to spectate the game");
                     gVictim.isSpectator = true;
-                    team.players.remove(gVictim);
+                    team.getPlayers().remove(gVictim);
                     team.getScoreboardTeam().removeEntry(victim.getName());
                     if (Main.isPlayerStatisticsEnabled()) {
                         PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(victim);
@@ -306,7 +307,7 @@ public class PlayerListener implements Listener {
                 }
             } else {
                 Debug.info(event.getPlayer().getName() + " is going to play the game");
-                event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
+                event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).getTeamInfo().spawn);
 
 
                 BedwarsPlayerRespawnedEvent respawnEvent = new BedwarsPlayerRespawnedEvent(game, event.getPlayer());
@@ -773,7 +774,7 @@ public class PlayerListener implements Listener {
                                 return;
                             }
 
-                            if (!team.players.contains(gPlayer)) {
+                            if (!team.getPlayers().contains(gPlayer)) {
                                 player.sendMessage(i18nc("team_chest_is_not_your", game.getCustomPrefix()));
                                 Debug.info(player.getName() + " tried to open foreign team chest");
                                 return;
@@ -846,7 +847,7 @@ public class PlayerListener implements Listener {
                                 boolean anchorFilled = false;
                                 if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false)
                                         && event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")
-                                        && game.getPlayerTeam(gPlayer).teamInfo.bed.equals(event.getClickedBlock().getLocation())
+                                        && game.getPlayerTeam(gPlayer).getTeamInfo().bed.equals(event.getClickedBlock().getLocation())
                                         && event.getItem() != null && event.getItem().getType() == Material.GLOWSTONE) {
                                     Debug.info(player.getName() + " filled respawn anchor");
                                     anchorFilled = Player116ListenerUtils.anchorCharge(event, game, stack);
@@ -1061,9 +1062,9 @@ public class PlayerListener implements Listener {
 
             String format = Main.getConfigurator().config.getString("chat.format", "<%teamcolor%%name%§r> ");
             if (team != null) {
-                format = format.replace("%teamcolor%", team.teamInfo.color.chatColor.toString());
-                format = format.replace("%team%", team.teamInfo.name);
-                format = format.replace("%coloredteam%", team.teamInfo.color.chatColor + team.teamInfo.name);
+                format = format.replace("%teamcolor%", team.getTeamInfo().color.chatColor.toString());
+                format = format.replace("%team%", team.getTeamInfo().name);
+                format = format.replace("%coloredteam%", team.getTeamInfo().color.chatColor + team.getTeamInfo().name);
             } else if (spectator) {
                 format = format.replace("%teamcolor%", ChatColor.GRAY.toString());
                 format = format.replace("%team%", "SPECTATOR");

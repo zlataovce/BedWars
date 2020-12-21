@@ -4,6 +4,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * @author Bedwars Team
  */
@@ -35,6 +38,12 @@ public interface ItemSpawnerType {
      * @return
      */
     double getSpread();
+
+    /**
+     * Possible: TICKS, SECONDS, MINUTES
+     * @return time unit of this spawner
+     */
+    SpawnerTime getTimeUnit();
 
     /**
      * @return
@@ -71,4 +80,14 @@ public interface ItemSpawnerType {
      * @return
      */
     ItemStack getStack(int amount);
+
+    @RequiredArgsConstructor
+    enum SpawnerTime {
+        TICKS(1),
+        SECONDS(20),
+        MINUTES(1200);
+
+        @Getter
+        private final long tickValue;
+    }
 }

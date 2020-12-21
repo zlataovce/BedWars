@@ -465,6 +465,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                     var interval = Main.getConfigurator().config.getInt("resources." + spawnerN + ".interval", 1);
                     var amount = Main.getConfigurator().config.getInt("resources." + spawnerN + ".amount", 1);
                     var spread = Main.getConfigurator().config.getDouble("resources." + spawnerN + ".spread");
+                    var timeUnit = Main.getConfigurator().config.getString("resources." + spawnerN + ".time-unit", "SECONDS");
                     var damage = Main.getConfigurator().config.getInt("resources." + spawnerN + ".damage");
                     var materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
                     var colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
@@ -484,8 +485,17 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                     } catch (IllegalArgumentException ignored) {
                         color = ChatColor.WHITE;
                     }
+
+                    org.screamingsandals.bedwars.api.game.ItemSpawnerType.SpawnerTime spawnerTime;
+                    try {
+                        spawnerTime = org.screamingsandals.bedwars.api.game.ItemSpawnerType.SpawnerTime.valueOf(timeUnit);
+                    } catch (Throwable ignored) {
+                        getSLF4JLogger().warn("Cannot parse TimeUnit for resource {}, defined time unit was {}!", name, timeUnit);
+                        spawnerTime = org.screamingsandals.bedwars.api.game.ItemSpawnerType.SpawnerTime.SECONDS;
+                    }
+
                     spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
-                            spread, result.getMaterial(), color, result.getDamage(), interval, amount));
+                            spread, result.getMaterial(), color, result.getDamage(), interval, amount, spawnerTime));
                 });
 
         menu = new ShopInventory();
@@ -516,18 +526,17 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (arenasFolder.exists()) {
             try (var stream = Files.walk(Paths.get(arenasFolder.getAbsolutePath()))) {
                 final var results = stream.filter(Files::isRegularFile)
-                        .map(Path::toString)
+                        .map(file -> new File(file.toString()))
                         .collect(Collectors.toList());
 
                 if (results.isEmpty()) {
                     Debug.info("No arenas have been found!", true);
                 } else {
-                    for (String result : results) {
-                        File file = new File(result);
+                    results.forEach(file -> {
                         if (file.exists() && file.isFile()) {
                             Game.loadGame(file);
                         }
-                    }
+                    });
                 }
             } catch (IOException e) {
                 e.printStackTrace(); // maybe remove after testing

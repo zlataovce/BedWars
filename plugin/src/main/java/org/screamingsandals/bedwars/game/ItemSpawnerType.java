@@ -24,6 +24,7 @@ public class ItemSpawnerType implements org.screamingsandals.bedwars.api.game.It
 
     private final int interval;
     private final int amount;
+    private final SpawnerTime timeUnit;
 
     public String getConfigKey() {
         return configKey;

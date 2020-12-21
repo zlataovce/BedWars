@@ -16,12 +16,16 @@ import java.util.List;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
 
+import lombok.Getter;
+
 public class CurrentTeam implements RunningTeam {
-    public final Team teamInfo;
-    public final List<GamePlayer> players = new ArrayList<>();
+    private final List<Block> chests = new ArrayList<>();
+    @Getter
+    private final Team teamInfo;
+    @Getter
+    private final List<GamePlayer> players = new ArrayList<>();
     private org.bukkit.scoreboard.Team scoreboardTeam;
-    private Inventory chestInventory;
-    private List<Block> chests = new ArrayList<>();
+    private final Inventory chestInventory;
     private Game game;
     private Hologram holo;
     private Hologram protectHolo;
