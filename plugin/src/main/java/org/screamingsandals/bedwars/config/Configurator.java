@@ -142,6 +142,7 @@ public class Configurator {
         checkOrSetConfig(modify, "bungee.serverStop", false);
         checkOrSetConfig(modify, "bungee.server", "hub");
         checkOrSetConfig(modify, "bungee.auto-game-connect", false);
+        checkOrSetConfig(modify, "bungee.kick-when-proxy-too-slow", true);
         checkOrSetConfig(modify, "bungee.motd.enabled", false);
         checkOrSetConfig(modify, "bungee.motd.waiting", "%name%: Waiting for players [%current%/%max%]");
         checkOrSetConfig(modify, "bungee.motd.waiting_full", "%name%: Game is full [%current%/%max%]");
@@ -266,6 +267,7 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.golem.collidable", false);
         checkOrSetConfig(modify, "specials.teamchest.turn-all-enderchests-to-teamchests", true);
         checkOrSetConfig(modify, "specials.throwable-fireball.explosion", 3.0);
+        checkOrSetConfig(modify, "specials.throwable-fireball.damage", 2.0);
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.explosion-time", config.getInt("tnt.explosion-time", 8));
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer", !config.getBoolean("tnt.dont-damage-placer"));
 

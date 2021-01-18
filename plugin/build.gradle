@@ -19,8 +19,32 @@ dependencies {
     shade 'com.zaxxer:HikariCP:3.3.0'
     shade 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.5'
     shade 'org.bstats:bstats-bukkit:1.7'
+    shade 'pronze.lib:scoreboard:1.0.0'
     shade paperlib()
 
+}
+
+task generateBuildInfoFile {
+    def outputDir = new File(projectDir, "build/generated/buildinfo")
+    doFirst {
+        mkdir outputDir
+
+        new File(outputDir, "build_info.yml").withWriter { writer ->
+            def contents = "build: "
+            if (System.getenv('BUILD_NUMBER') != null) {
+                contents += System.getenv('BUILD_NUMBER')
+            } else {
+                contents += "custom"
+            }
+            writer.write(contents)
+        }
+    }
+}
+
+sourceSets {
+    main {
+        output.dir(new File(projectDir, "build/generated/buildinfo"), builtBy: 'generateBuildInfoFile')
+    }
 }
 
 enableSpigradleSpigot()

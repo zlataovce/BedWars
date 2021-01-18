@@ -23,8 +23,10 @@ subprojects {
         maven { url 'https://repo.onarandombox.com/content/groups/public'  }
         maven { url 'https://ci.frostcast.net/plugin/repository/everything'  }
         maven { url 'https://repo.codemc.org/repository/maven-public/'  }
-        maven { url 'https://jitpack.io'  }
+        maven { url 'https://jitpack.io' }
         maven { url 'https://repo.citizensnpcs.co'  }
+        /* Our gitlab repo for scoreboard lib*/
+        maven { url 'https://gitlab.hoznet.dev/api/v4/projects/13/packages/maven' }
     }
     
     dependencies {
@@ -36,6 +38,7 @@ subprojects {
         relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.bstats'
         relocate 'io.papermc.lib', 'org.screamingsandals.lib.paperlib'
+        relocate 'pronze.lib', 'org.screamingsandals.lib.pronze'
 
         if (System.getenv('BUILD_NUMBER') != null) {
             archiveClassifier.set(System.getenv('BUILD_NUMBER'))
