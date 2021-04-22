@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.ItemSpawner;
-import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.team.Team;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.hologram.Hologram;

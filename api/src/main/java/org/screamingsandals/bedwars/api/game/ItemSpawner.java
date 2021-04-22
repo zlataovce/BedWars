@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.api.game;
 
-import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.team.Team;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.bukkit.Location;
 

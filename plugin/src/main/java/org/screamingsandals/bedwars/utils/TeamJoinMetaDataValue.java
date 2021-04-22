@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.utils;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.team.Team;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 

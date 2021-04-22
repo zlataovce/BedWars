@@ -8,7 +8,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.team.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 
 public class AutoIgniteableTNT extends SpecialItem

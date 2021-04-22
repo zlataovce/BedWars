@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.special;
 
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.team.Team;
 import org.bukkit.entity.Player;
 
 public abstract class SpecialItem implements org.screamingsandals.bedwars.api.special.SpecialItem {

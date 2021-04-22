@@ -3,8 +3,8 @@ package org.screamingsandals.bedwars.special;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.api.team.Team;
+import org.screamingsandals.bedwars.game.OldTeamColor;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
@@ -65,7 +65,7 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
 
     public void spawn() {
         Sheep sheep = (Sheep) loc.getWorld().spawnEntity(loc, EntityType.SHEEP);
-        TeamColor color = TeamColor.fromApiColor(team.getColor());
+        OldTeamColor color = OldTeamColor.fromApiColor(team.getColor());
         Player target = MiscUtils.findTarget(game, player, maxTargetDistance);
 
         sheep.setColor(DyeColor.getByWoolData((byte) color.woolData));

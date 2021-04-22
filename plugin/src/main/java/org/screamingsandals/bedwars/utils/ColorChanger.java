@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.OldTeamColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -12,7 +12,7 @@ import org.screamingsandals.lib.material.builder.ItemFactory;
 
 public class ColorChanger implements org.screamingsandals.bedwars.api.utils.ColorChanger<Item> {
     @Deprecated
-    public static ItemStack changeLegacyStackColor(ItemStack itemStack, TeamColor teamColor) {
+    public static ItemStack changeLegacyStackColor(ItemStack itemStack, OldTeamColor teamColor) {
         Material material = itemStack.getType();
         String materialName = material.name();
 
@@ -29,7 +29,7 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
     }
 
     @Deprecated
-    public static Material changeMaterialColor(Material material, TeamColor teamColor) {
+    public static Material changeMaterialColor(Material material, OldTeamColor teamColor) {
         String materialName = material.name();
 
         try {
@@ -51,7 +51,7 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
     }
 
     @Deprecated
-    public static ItemStack changeLeatherArmorColor(ItemStack itemStack, TeamColor color) {
+    public static ItemStack changeLeatherArmorColor(ItemStack itemStack, OldTeamColor color) {
         Material material = itemStack.getType();
 
         if (material.toString().contains("LEATHER_") && !material.toString().contains("LEATHER_HORSE_")) {
@@ -67,9 +67,9 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
 
     @Deprecated
     @Override
-    public ItemStack applyColor(org.screamingsandals.bedwars.api.TeamColor apiColor, ItemStack stack) {
+    public ItemStack applyColor(org.screamingsandals.bedwars.api.OldTeamColor apiColor, ItemStack stack) {
         try {
-            TeamColor color = TeamColor.fromApiColor(apiColor);
+            OldTeamColor color = OldTeamColor.fromApiColor(apiColor);
             Material material = stack.getType();
             if (Main.isLegacy()) {
                 stack = changeLegacyStackColor(stack, color);
@@ -86,8 +86,8 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
     }
 
     @Override
-    public Item applyColor(org.screamingsandals.bedwars.api.TeamColor apiColor, Object item) {
-        var color = TeamColor.fromApiColor(apiColor);
+    public Item applyColor(org.screamingsandals.bedwars.api.OldTeamColor apiColor, Object item) {
+        var color = OldTeamColor.fromApiColor(apiColor);
         var newItem = item instanceof Item ? ((Item) item).clone() : ItemFactory.build(item).orElse(ItemFactory.getAir());
         if (newItem.getMaterial().is("LEATHER_BOOTS", "LEATHER_CHESTPLATE", "LEATHER_HELMET", "LEATHER_LEGGINGS")) {
             newItem.setColor(color.getLeatherColor());

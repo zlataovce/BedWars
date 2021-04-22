@@ -17,7 +17,7 @@ import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
-import org.screamingsandals.bedwars.game.CurrentTeam;
+import org.screamingsandals.bedwars.team.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManager;

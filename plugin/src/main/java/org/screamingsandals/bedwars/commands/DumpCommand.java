@@ -15,7 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.VersionInfo;
-import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.team.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.Game;

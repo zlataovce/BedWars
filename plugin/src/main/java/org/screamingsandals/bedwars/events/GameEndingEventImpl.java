@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.events.GameEndingEvent;
-import org.screamingsandals.bedwars.game.CurrentTeam;
+import org.screamingsandals.bedwars.team.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.lib.event.AbstractEvent;
 

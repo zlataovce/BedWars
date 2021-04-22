@@ -7,7 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.team.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManager;

@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.api.upgrades;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
-import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.team.Team;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 
 import java.util.ArrayList;

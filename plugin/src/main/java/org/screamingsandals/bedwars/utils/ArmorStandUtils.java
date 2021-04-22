@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.team.Team;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.ItemStack;

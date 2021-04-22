@@ -6,7 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManager;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.OldTeamColor;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -213,7 +213,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                 Component spawnerTeam;
 
                                 if (team != null) {
-                                    spawnerTeam = AdventureHelper.toComponent(TeamColor.fromApiColor(team.getColor()).chatColor + team.getName());
+                                    spawnerTeam = AdventureHelper.toComponent(OldTeamColor.fromApiColor(team.getColor()).chatColor + team.getName());
                                 } else {
                                     spawnerTeam = Message.of(LangKeys.ADMIN_INFO_SPAWNER_NO_TEAM).asComponent(sender);
                                 }

@@ -8,7 +8,7 @@ import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.OldTeamColor;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -104,7 +104,7 @@ public class ScreamingScoreboard {
         game.getRunningTeams().forEach(team -> {
             if (sidebar.getTeam(team.getName()).isEmpty()) {
                 sidebar.team(team.getName())
-                        .color(NamedTextColor.NAMES.value(TeamColor.fromApiColor(team.getColor()).chatColor.name().toLowerCase()))
+                        .color(NamedTextColor.NAMES.value(OldTeamColor.fromApiColor(team.getColor()).chatColor.name().toLowerCase()))
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             }
             var sidebarTeam = sidebar.getTeam(team.getName()).orElseThrow();
@@ -132,7 +132,7 @@ public class ScreamingScoreboard {
         return MainConfig.getInstance().node("experimental", "new-scoreboard-system", "teamTitle").getString("")
                 .replace("%team_size%", String.valueOf(
                         team.getConnectedPlayers().size()))
-                .replace("%color%", TeamColor.fromApiColor(team.getColor())
+                .replace("%color%", OldTeamColor.fromApiColor(team.getColor())
                         .chatColor.toString()).replace("%team%", team.getName())
                 .replace("%bed%", destroy ? Game.bedLostString() : (empty ? Game.anchorEmptyString() : Game.bedExistString()));
     }

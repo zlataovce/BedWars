@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 
-public enum TeamColor {
+public enum OldTeamColor {
     BLACK(ChatColor.BLACK, 0xF, "BLACK", Color.BLACK),
     BLUE(ChatColor.DARK_BLUE, 0xB, "BLUE", Color.fromRGB(0, 0, 170)),
     GREEN(ChatColor.DARK_GREEN, 0xD, "GREEN", Color.fromRGB(0, 170, 0)),
@@ -30,7 +30,7 @@ public enum TeamColor {
     public final int woolData;
     public final Color leatherColor;
 
-    TeamColor(ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
+    OldTeamColor(ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
         this.chatColor = chatColor;
         this.woolData = woolData;
         this.material1_13 = material1_13;
@@ -57,12 +57,12 @@ public enum TeamColor {
 
     }
 
-    public org.screamingsandals.bedwars.api.TeamColor toApiColor() {
-        return org.screamingsandals.bedwars.api.TeamColor.valueOf(this.name());
+    public org.screamingsandals.bedwars.api.OldTeamColor toApiColor() {
+        return org.screamingsandals.bedwars.api.OldTeamColor.valueOf(this.name());
     }
 
-    public static TeamColor fromApiColor(org.screamingsandals.bedwars.api.TeamColor color) {
-        return TeamColor.valueOf(color.name());
+    public static OldTeamColor fromApiColor(org.screamingsandals.bedwars.api.OldTeamColor color) {
+        return OldTeamColor.valueOf(color.name());
     }
 
     public RGBLike getLeatherColor() {

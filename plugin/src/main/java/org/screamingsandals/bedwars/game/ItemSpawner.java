@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.game;
 import lombok.Getter;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.team.Team;
 
 import java.util.ArrayList;
 import java.util.List;

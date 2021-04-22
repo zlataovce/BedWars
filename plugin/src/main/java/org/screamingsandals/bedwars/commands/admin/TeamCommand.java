@@ -9,8 +9,8 @@ import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
-import org.screamingsandals.bedwars.game.Team;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.team.Team;
+import org.screamingsandals.bedwars.game.OldTeamColor;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
@@ -35,14 +35,14 @@ public class TeamCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("add")
                         .argument(StringArgument.of("teamName"))
-                        .argument(EnumArgument.of(TeamColor.class, "color"))
+                        .argument(EnumArgument.of(OldTeamColor.class, "color"))
                         .argument(IntegerArgument
                                 .<CommandSenderWrapper>newBuilder("maximumPlayers")
                                 .withMin(1)
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("teamName");
-                            TeamColor color = commandContext.get("color");
+                            OldTeamColor color = commandContext.get("color");
                             int maxPlayers = commandContext.get("maximumPlayers");
 
                             if (game.getTeamFromName(name) != null) {
@@ -109,10 +109,10 @@ public class TeamCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("color")
                         .argument(teamNameArgument)
-                        .argument(EnumArgument.of(TeamColor.class, "color"))
+                        .argument(EnumArgument.of(OldTeamColor.class, "color"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("teamName");
-                            TeamColor color = commandContext.get("color");
+                            OldTeamColor color = commandContext.get("color");
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {

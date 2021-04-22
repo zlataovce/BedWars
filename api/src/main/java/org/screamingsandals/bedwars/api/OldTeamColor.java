@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.api;
 /**
  * @author Bedwars Team
  */
-public enum TeamColor {
+public enum OldTeamColor {
     BLACK,
     BLUE,
     GREEN,

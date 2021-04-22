@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
-import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.team.Team;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.TeamJoinMetaDataValue;
 import org.screamingsandals.lib.lang.Message;

@@ -8,9 +8,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.team.Team;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.OldTeamColor;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
@@ -61,7 +61,7 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
     }
 
     public void spawn() {
-        final TeamColor color = TeamColor.fromApiColor(team.getColor());
+        final OldTeamColor color = OldTeamColor.fromApiColor(team.getColor());
         final IronGolem golem = (IronGolem) location.getWorld().spawnEntity(location, EntityType.IRON_GOLEM);
         golem.setHealth(health);
         golem.setCustomName(name

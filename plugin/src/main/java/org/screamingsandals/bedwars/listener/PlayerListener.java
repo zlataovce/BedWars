@@ -44,6 +44,8 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.bedwars.team.CurrentTeam;
+import org.screamingsandals.bedwars.team.Team;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;

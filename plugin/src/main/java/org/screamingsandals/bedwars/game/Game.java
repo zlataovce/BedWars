@@ -18,7 +18,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -60,6 +59,8 @@ import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
+import org.screamingsandals.bedwars.team.CurrentTeam;
+import org.screamingsandals.bedwars.team.Team;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.hologram.HologramManager;
@@ -95,6 +96,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final List<Team> teams = new ArrayList<>();
     private final List<ItemSpawner> spawners = new ArrayList<>();
     private final Map<Player, RespawnProtection> respawnProtectionMap = new HashMap<>();
+    private final List<SavedGameElement<?>> elements = new LinkedList<>();
     private int pauseCountdown;
     private int gameTime;
     private int minPlayers;
@@ -252,11 +254,22 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 game.lobbyPos2 = MiscUtils.readLocationFromString(lobbySpawnWorld, lobbyPos2);
             }
 
+            configMap.node("elements").childrenList().forEach(node -> {
+                try {
+                    var element = new SavedGameElement<>();
+                    element.deserialize(node);
+                    game.elements.add(element);
+                } catch (ConfigurateException ex) {
+                    ex.printStackTrace();
+                }
+            });
+
             game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, Objects.requireNonNull(configMap.node("lobbySpawn").getString()));
             game.minPlayers = configMap.node("minPlayers").getInt(2);
             configMap.node("teams").childrenMap().forEach((teamN, team) -> {
                 var t = new Team();
-                t.color = TeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.node("color").getString(), team.node("isNewColor").getBoolean()));
+                var color = team.node("color");
+                t.color = OldTeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.node("color").getString(), team.node("isNewColor").getBoolean()));
                 t.name = teamN.toString();
                 t.bed = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("bed").getString()));
                 t.maxPlayers = team.node("maxPlayers").getInt();
@@ -717,7 +730,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return null;
     }
 
-    public CurrentTeam getCurrentTeamFromTeam(org.screamingsandals.bedwars.api.Team team) {
+    public CurrentTeam getCurrentTeamFromTeam(org.screamingsandals.bedwars.api.team.Team team) {
         for (CurrentTeam currentTeam : teamsInGame) {
             if (currentTeam.teamInfo == team) {
                 return currentTeam;
@@ -1083,7 +1096,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             spawnerNode.node("customName").set(spawner.customName);
             spawnerNode.node("startLevel").set(spawner.startLevel);
             spawnerNode.node("hologramEnabled").set(spawner.hologramEnabled);
-            spawnerNode.node("team").set(spawner.getTeam().map(org.screamingsandals.bedwars.api.Team::getName).orElse(null));
+            spawnerNode.node("team").set(spawner.getTeam().map(org.screamingsandals.bedwars.api.team.Team::getName).orElse(null));
             spawnerNode.node("maxSpawnedResources").set(spawner.maxSpawnedResources);
             spawnerNode.node("floatingEnabled").set(spawner.maxSpawnedResources);
             spawnerNode.node("rotationMode").set(spawner.rotationMode);
@@ -1112,6 +1125,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         } catch (Throwable t) {
             // We're using 1.8
         }
+
+        var elementsNode = configMap.node("elements");
+
+        elements.forEach(savedGameElement -> {
+            try {
+                savedGameElement.serialize(elementsNode.appendListNode());
+            } catch (ConfigurateException e) {
+                e.printStackTrace();
+            }
+        });
 
         try {
             loader.save(configMap);
@@ -1928,7 +1951,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 var message = Message
                                         .of(LangKeys.IN_GAME_END_TEAM_WIN)
                                         .prefixOrDefault(getCustomPrefixComponent())
-                                        .placeholder("team", AdventureHelper.toComponent(TeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
+                                        .placeholder("team", AdventureHelper.toComponent(OldTeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
                                         .placeholder("time", time);
                                 boolean madeRecord = processRecord(t, gameTime - countdown);
                                 for (BedWarsPlayer player : players) {
@@ -1936,7 +1959,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     if (getPlayerTeam(player) == t) {
                                         Message.of(LangKeys.IN_GAME_END_YOU_WON)
                                                 .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                .placeholder("team", AdventureHelper.toComponent(TeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
+                                                .placeholder("team", AdventureHelper.toComponent(OldTeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
@@ -1986,7 +2009,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     } else {
                                         Message.of(LangKeys.IN_GAME_END_YOU_LOST)
                                                 .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                .placeholder("team", AdventureHelper.toComponent(TeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
+                                                .placeholder("team", AdventureHelper.toComponent(OldTeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
@@ -2571,7 +2594,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public void selectPlayerTeam(Player player, org.screamingsandals.bedwars.api.Team team) {
+    public void selectPlayerTeam(Player player, org.screamingsandals.bedwars.api.team.Team team) {
         if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
@@ -2608,7 +2631,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public List<org.screamingsandals.bedwars.api.Team> getAvailableTeams() {
+    public List<org.screamingsandals.bedwars.api.team.Team> getAvailableTeams() {
         return new ArrayList<>(teams);
     }
 
@@ -2735,7 +2758,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public List<SpecialItem> getActivedSpecialItemsOfTeam(org.screamingsandals.bedwars.api.Team team) {
+    public List<SpecialItem> getActivedSpecialItemsOfTeam(org.screamingsandals.bedwars.api.team.Team team) {
         List<SpecialItem> items = new ArrayList<>();
         for (SpecialItem item : activeSpecialItems) {
             if (item.getTeam() == team) {
@@ -2746,7 +2769,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public List<SpecialItem> getActivedSpecialItemsOfTeam(org.screamingsandals.bedwars.api.Team team,
+    public List<SpecialItem> getActivedSpecialItemsOfTeam(org.screamingsandals.bedwars.api.team.Team team,
                                                           Class<? extends SpecialItem> type) {
         List<SpecialItem> items = new ArrayList<>();
         for (SpecialItem item : activeSpecialItems) {
@@ -2758,7 +2781,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public SpecialItem getFirstActivedSpecialItemOfTeam(org.screamingsandals.bedwars.api.Team team) {
+    public SpecialItem getFirstActivedSpecialItemOfTeam(org.screamingsandals.bedwars.api.team.Team team) {
         for (SpecialItem item : activeSpecialItems) {
             if (item.getTeam() == team) {
                 return item;
@@ -2768,7 +2791,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public SpecialItem getFirstActivedSpecialItemOfTeam(org.screamingsandals.bedwars.api.Team team,
+    public SpecialItem getFirstActivedSpecialItemOfTeam(org.screamingsandals.bedwars.api.team.Team team,
                                                         Class<? extends SpecialItem> type) {
         for (SpecialItem item : activeSpecialItems) {
             if (item.getTeam() == team && type.isInstance(item)) {
@@ -3060,5 +3083,35 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public void setCustomPrefix(String customPrefix) {
         this.customPrefix = customPrefix;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends GameElement> Optional<SavedGameElement<T>> getGameElement(Class<T> type, UUID uuid) {
+        return elements.stream().filter(saved -> type.isInstance(saved.getGameElement()) && uuid.equals(saved.getUuid())).map(el -> (SavedGameElement<T>) el).findFirst();
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends GameElement> Optional<SavedGameElement<T>> getGameElement(Class<T> type, String globalKey) {
+        return elements.stream().filter(saved -> type.isInstance(saved.getGameElement()) && globalKey.equals(saved.getGlobalKey()) && saved.isSynchronize()).map(el -> (SavedGameElement<T>) el).findFirst();
+    }
+
+    public <T extends GameElement> SavedGameElement<T> putGameElement(T element) {
+        return putGameElement(element, null, false);
+    }
+
+
+    public <T extends GameElement> SavedGameElement<T> putGameElement(T element, @Nullable String globalKey) {
+        return putGameElement(element, globalKey, true);
+    }
+
+    public <T extends GameElement> SavedGameElement<T> putGameElement(T element, @Nullable String globalKey, boolean synchronize) {
+        var uuid = UUID.randomUUID();
+        var savedGameElement = new SavedGameElement<T>();
+        savedGameElement.setUuid(uuid);
+        savedGameElement.setGameElement(element);
+        savedGameElement.setGlobalKey(globalKey);
+        savedGameElement.setSynchronize(synchronize);
+        elements.add(savedGameElement);
+        return savedGameElement;
     }
 }
