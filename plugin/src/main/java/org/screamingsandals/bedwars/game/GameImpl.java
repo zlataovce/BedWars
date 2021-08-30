@@ -1566,7 +1566,10 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
 
         if (gamePlayer.getGame() == this && currentTeam != null) {
             gamePlayer.isSpectator = false;
-            gamePlayer.teleport(currentTeam.getTeamSpawn(), () -> {
+            if (player.getSpectatorTarget() != null) {
+                player.setSpectatorTarget(null);
+            }
+            gamePlayer.teleport(MiscUtils.findEmptyLocation(currentTeam.getTeamSpawn()), () -> {
                 player.setAllowFlight(false); // TODO: SLib equivalent
                 player.setFlying(false);
                 gamePlayer.setGameMode(GameModeHolder.of("survival"));
